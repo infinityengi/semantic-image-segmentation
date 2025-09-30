@@ -1,0 +1,48 @@
+# Virtualenvs
+venv/
+my_venv/
+.venv/
+env/
+ENV/
+
+# Python caches & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Database files (all .db3 files)
+*.db3
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE/editor
+.idea/
+.vscode/
+
+# TensorFlow datasets and logs
+motebooks/tensorflow_datasets/
+tensorboard/
+
+# Notebook-level grid_mapping (covers notebooks/grid_mapping)
+notebooks/grid_mapping/checkpoints/
+#notebooks/grid_mapping/point_cloud.png
+#notebooks/grid_mapping/grid_map.png
+
+# Also ignore any grid_mapping at any other level (if you prefer loose match)
+# grid_mapping/checkpoints/
+# grid_mapping/point_cloud.png
+# grid_mapping/grid_map.png
+
+# Common large/derived folders (recommended)
+notebooks/datasets/
+notebooks/ipm_assets/
+notebooks/object_detection/
+# models/
+# results/
+# experiments/runs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
