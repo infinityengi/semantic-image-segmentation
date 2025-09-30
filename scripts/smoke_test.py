@@ -30,6 +30,7 @@ except Exception as e:
 # --- TensorFlow check ---
 try:
     import tensorflow as tf
+
     print(f"✅ TensorFlow installed, version: {tf.__version__}")
 except ImportError:
     print("ℹ️ TensorFlow not installed — skipping model build")
@@ -47,9 +48,14 @@ if tf is not None:
                 n_classes=3,
                 base_filters=8,
             )
-            print("✅ Built tiny model from image_segmentation_utils with params:", model.count_params())
+            print(
+                "✅ Built tiny model from image_segmentation_utils with params:",
+                model.count_params(),
+            )
         else:
-            print("ℹ️ No build_unet() found in image_segmentation_utils — skipping model build")
+            print(
+                "ℹ️ No build_unet() found in image_segmentation_utils — skipping model build"
+            )
 
     except Exception as e:
         print("❌ Model build failed:", e)

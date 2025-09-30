@@ -1,6 +1,7 @@
 """evilog_2021 dataset."""
 
 import resource
+
 low, high = resource.getrlimit(resource.RLIMIT_NOFILE)
 resource.setrlimit(resource.RLIMIT_NOFILE, (high, high))
 
@@ -36,106 +37,110 @@ _CITATION = """
 }
 """
 
-VERSION = tfds.core.Version('1.0.0')
+VERSION = tfds.core.Version("1.0.0")
 
 RELEASE_NOTES = {
-  '1.0.0': 'Initial release.',
+    "1.0.0": "Initial release.",
 }
 
 
 class Evilog2021Config(tfds.core.BuilderConfig):
-  """BuilderConfig for Evilog2021."""
+    """BuilderConfig for Evilog2021."""
 
-  def __init__(self, *, variant=None, **kwargs):
-    """BuilderConfig for Evilog2021.
-    Args:
-      variant: str. Variant of the dataset.
-      **kwargs: keyword arguments forwarded to super.
-    """
-    super(Evilog2021Config, self).__init__(version=VERSION, **kwargs)
-    self.variant = variant
+    def __init__(self, *, variant=None, **kwargs):
+        """BuilderConfig for Evilog2021.
+        Args:
+          variant: str. Variant of the dataset.
+          **kwargs: keyword arguments forwarded to super.
+        """
+        super(Evilog2021Config, self).__init__(version=VERSION, **kwargs)
+        self.variant = variant
 
 
 class Evilog2021(tfds.core.GeneratorBasedBuilder):
-  """DatasetBuilder for evilog_2021 dataset."""
+    """DatasetBuilder for evilog_2021 dataset."""
 
-  BUILDER_CONFIGS = [
-    Evilog2021Config(
-      name="full",
-      description="Full Dataset",
-      variant="full",
-    ),
-    Evilog2021Config(
-      name="demo",
-      description="Demo Dataset",
-      variant="demo",
-    ),
-  ]
-
-  def _info(self) -> tfds.core.DatasetInfo:
-    """Returns the dataset metadata."""
-    return tfds.core.DatasetInfo(
-        builder=self,
-        description=_DESCRIPTION,
-        features=tfds.features.FeaturesDict({
-            'point_cloud': tfds.features.Tensor(shape=(None, 4), dtype=tf.float32),
-            'grid_map': tfds.features.Tensor(shape=(None, None, 2), dtype=tf.float32, encoding='zlib'),
-        }),
-        # If there's a common (input, target) tuple from the
-        # features, specify them here. They'll be used if
-        # `as_supervised=True` in `builder.as_dataset`.
-        supervised_keys=('point_cloud', 'grid_map'),  # Set to `None` to disable
-        homepage='https://github.com/ika-rwth-aachen/EviLOG',
-        citation=_CITATION,
-    )
-
-  def _split_generators(self, dl_manager: tfds.download.DownloadManager):
-    """Returns SplitGenerators."""
-    if self._builder_config.variant == "demo":
-      url = 'https://rwth-aachen.sciebo.de/s/tnvuKHcIzPAA4QK/download'
-    else:
-      url = '******'
-
-    path = dl_manager.download_and_extract(url)
-    print(path)
-
-    return {
-        'train': self._generate_examples(
-            point_cloud_path = path / 'input_train',
-            grid_map_path = path / 'label_train'
+    BUILDER_CONFIGS = [
+        Evilog2021Config(
+            name="full",
+            description="Full Dataset",
+            variant="full",
         ),
-        'valid': self._generate_examples(
-            point_cloud_path = path / 'input_valid',
-            grid_map_path = path / 'label_valid'
+        Evilog2021Config(
+            name="demo",
+            description="Demo Dataset",
+            variant="demo",
         ),
-        'test': self._generate_examples(
-            point_cloud_path = path / 'input_test',
-            grid_map_path = path / 'label_test'
-        ),
-        'real': self._generate_examples(
-            point_cloud_path = path / 'input_real'
-        ),
-    }
+    ]
 
-  def _generate_examples(self, point_cloud_path, grid_map_path=None):
-    """Yields examples."""
-    for input_file in point_cloud_path.glob('*.pcd'):
-      filename = os.path.splitext(os.path.basename(input_file))[0]
-    
-      # convert pcd file to numpy.ndarray with one point per row with columns (x, y, z, i)
-      point_cloud = PyntCloud.from_file(str(input_file)).points.values[:, 0:4]
-      
-      if grid_map_path is None:
-        grid_map = np.array([[[0, 0]]], dtype=np.float32)
-      else:
-        # convert png file to grid map of size [height, width, 2] with (m_occupied, m_free) in each cell
-        label_file = os.path.join(grid_map_path, filename + '.png')
-        image = Image.open(label_file)
-        grid_map = np.asarray(image, dtype=np.float32)
-        grid_map = grid_map[..., 1:3]/255.0  # use only channels 'free' and 'occupied'
+    def _info(self) -> tfds.core.DatasetInfo:
+        """Returns the dataset metadata."""
+        return tfds.core.DatasetInfo(
+            builder=self,
+            description=_DESCRIPTION,
+            features=tfds.features.FeaturesDict(
+                {
+                    "point_cloud": tfds.features.Tensor(
+                        shape=(None, 4), dtype=tf.float32
+                    ),
+                    "grid_map": tfds.features.Tensor(
+                        shape=(None, None, 2), dtype=tf.float32, encoding="zlib"
+                    ),
+                }
+            ),
+            # If there's a common (input, target) tuple from the
+            # features, specify them here. They'll be used if
+            # `as_supervised=True` in `builder.as_dataset`.
+            supervised_keys=("point_cloud", "grid_map"),  # Set to `None` to disable
+            homepage="https://github.com/ika-rwth-aachen/EviLOG",
+            citation=_CITATION,
+        )
 
-      yield filename, {
-          'point_cloud': point_cloud,
-          'grid_map': grid_map,
-      }
+    def _split_generators(self, dl_manager: tfds.download.DownloadManager):
+        """Returns SplitGenerators."""
+        if self._builder_config.variant == "demo":
+            url = "https://rwth-aachen.sciebo.de/s/tnvuKHcIzPAA4QK/download"
+        else:
+            url = "******"
 
+        path = dl_manager.download_and_extract(url)
+        print(path)
+
+        return {
+            "train": self._generate_examples(
+                point_cloud_path=path / "input_train",
+                grid_map_path=path / "label_train",
+            ),
+            "valid": self._generate_examples(
+                point_cloud_path=path / "input_valid",
+                grid_map_path=path / "label_valid",
+            ),
+            "test": self._generate_examples(
+                point_cloud_path=path / "input_test", grid_map_path=path / "label_test"
+            ),
+            "real": self._generate_examples(point_cloud_path=path / "input_real"),
+        }
+
+    def _generate_examples(self, point_cloud_path, grid_map_path=None):
+        """Yields examples."""
+        for input_file in point_cloud_path.glob("*.pcd"):
+            filename = os.path.splitext(os.path.basename(input_file))[0]
+
+            # convert pcd file to numpy.ndarray with one point per row with columns (x, y, z, i)
+            point_cloud = PyntCloud.from_file(str(input_file)).points.values[:, 0:4]
+
+            if grid_map_path is None:
+                grid_map = np.array([[[0, 0]]], dtype=np.float32)
+            else:
+                # convert png file to grid map of size [height, width, 2] with (m_occupied, m_free) in each cell
+                label_file = os.path.join(grid_map_path, filename + ".png")
+                image = Image.open(label_file)
+                grid_map = np.asarray(image, dtype=np.float32)
+                grid_map = (
+                    grid_map[..., 1:3] / 255.0
+                )  # use only channels 'free' and 'occupied'
+
+            yield filename, {
+                "point_cloud": point_cloud,
+                "grid_map": grid_map,
+            }
