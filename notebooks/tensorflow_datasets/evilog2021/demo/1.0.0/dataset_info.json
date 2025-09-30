@@ -1,0 +1,62 @@
+{
+  "citation": "@misc{vankempen2021simulationbased,\n      title={A Simulation-based End-to-End Learning Framework for Evidential Occupancy Grid Mapping}, \n      author={Raphael van Kempen, Bastian Lampe, Timo Woopen and Lutz Eckstein},\n      year={2021},\n      eprint={2102.12718},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO}\n}",
+  "configDescription": "Demo Dataset",
+  "configName": "demo",
+  "description": "The EviLOG 2021 dataset contains point clouds and evidential occupancy grid maps.\nPoint clouds have shape (NUM_POINTS, 4) where each points consits of (x, y, z, intensity).\nOccupancy grid maps are of shape (HEIGHT, WIDTH, 2) where each cell contains the two belief masses m_occupied and m_free.\n\n- **Synthetic training and validation data** consisting of lidar point clouds and evidential occupancy grid maps (as png files)\n  - 10.000 training samples\n  - 1.000 validation samples\n  - 100 test samples\n- **Real-world input data** that was recorded with a Velodyne VLP32C lidar sensor during a ~9 minutes ride in an urban area (5.224 point clouds).",
+  "downloadSize": "97140462",
+  "fileFormat": "tfrecord",
+  "location": {
+    "urls": [
+      "https://github.com/ika-rwth-aachen/EviLOG"
+    ]
+  },
+  "moduleName": "grid_mapping.evilog_2021",
+  "name": "evilog2021",
+  "splits": [
+    {
+      "filepathTemplate": "{DATASET}-{SPLIT}.{FILEFORMAT}-{SHARD_X_OF_Y}",
+      "name": "train",
+      "numBytes": "43170955",
+      "shardLengths": [
+        "100"
+      ]
+    },
+    {
+      "filepathTemplate": "{DATASET}-{SPLIT}.{FILEFORMAT}-{SHARD_X_OF_Y}",
+      "name": "valid",
+      "numBytes": "21632938",
+      "shardLengths": [
+        "50"
+      ]
+    },
+    {
+      "filepathTemplate": "{DATASET}-{SPLIT}.{FILEFORMAT}-{SHARD_X_OF_Y}",
+      "name": "test",
+      "numBytes": "8835274",
+      "shardLengths": [
+        "20"
+      ]
+    },
+    {
+      "filepathTemplate": "{DATASET}-{SPLIT}.{FILEFORMAT}-{SHARD_X_OF_Y}",
+      "name": "real",
+      "numBytes": "33442654",
+      "shardLengths": [
+        "50"
+      ]
+    }
+  ],
+  "supervisedKeys": {
+    "tuple": {
+      "items": [
+        {
+          "featureKey": "point_cloud"
+        },
+        {
+          "featureKey": "grid_map"
+        }
+      ]
+    }
+  },
+  "version": "1.0.0"
+}
