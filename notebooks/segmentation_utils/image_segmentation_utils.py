@@ -77,7 +77,6 @@ def convert_rgb_encoding_to_segmentation_map(image, rgb_to_class_id):
     segmentation_map = tf.zeros([image.shape[0], image.shape[1]], dtype=tf.uint8)
 
     for color, class_id in rgb_to_class_id.items():
-
         segmentation_map = tf.where(
             condition=tf.reduce_all(tf.equal(image, color), axis=-1),
             x=tf.cast(class_id, tf.uint8),
@@ -123,7 +122,6 @@ def parse_sample(image_path, label_path):
 
 
 def encoder(input, udepth, filters1, kernel_size, activation, batch_norm, dropout):
-
     t = input
     encoder_layers = udepth * [None]
 
@@ -154,7 +152,6 @@ def encoder(input, udepth, filters1, kernel_size, activation, batch_norm, dropou
 def decoder(
     encoder_layers, udepth, filters1, kernel_size, activation, batch_norm, dropout
 ):
-
     # start at lowest encoder layer
     t = encoder_layers[udepth - 1]
 

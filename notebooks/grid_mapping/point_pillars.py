@@ -20,7 +20,6 @@ import tensorflow as tf
 
 
 def getPointPillarsModel(image_size, max_pillars, max_points, nb_features, nb_channels):
-
     if tf.keras.backend.image_data_format() == "channels_first":
         raise NotImplementedError
     else:
